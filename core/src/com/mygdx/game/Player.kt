@@ -2,7 +2,11 @@ package com.mygdx.game
 
 import com.badlogic.gdx.Input.Keys
 import com.badlogic.gdx.graphics.Texture
+import com.badlogic.gdx.graphics.g2d.Animation
+import com.badlogic.gdx.graphics.g2d.Animation.PlayMode.LOOP_PINGPONG
+import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g2d.Sprite
+import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.InputEvent
@@ -12,15 +16,26 @@ import com.mygdx.game.Character.Direction.LEFT
 import com.mygdx.game.Character.Direction.RIGHT
 import com.mygdx.game.Character.Direction.UP
 
-class Player(initialPosition: Vector2, private val canMove: (Character, Rectangle) -> Boolean) : Character() {
+class Player(initialPosition: Vector2, private val onPositionChanged: Player.() -> Unit, private val canMove: (Rectangle) -> Boolean) : Character() {
     private val img = Texture("RSE Protags 01.png")
     private var keyDown: Int? = null
 
-    override val idleSprites = IdleSprites(
-        up = Sprite(img, 24, 96, 24, 32),
-        left = Sprite(img, 24, 32, 24, 32),
-        down = Sprite(img, 24, 0, 24, 32),
-        right = Sprite(img, 24, 64, 24, 32),
+    private var walkAnimation: Animation<TextureRegion>? = null
+    private var walkAnimationTime = 0f
+    private var walking = false
+
+    override val idleSprites = mapOf(
+        UP to Sprite(img, 24, 96, 24, 32),
+        LEFT to Sprite(img, 24, 32, 24, 32),
+        DOWN to Sprite(img, 24, 0, 24, 32),
+        RIGHT to Sprite(img, 24, 64, 24, 32),
+    )
+
+    private val walkFrames = mapOf(
+        UP to TextureRegion(img, 0, 96, 3 * 24, 1 * 32).split(24, 32)[0],
+        LEFT to TextureRegion(img, 0, 32, 3 * 24, 1 * 32).split(24, 32)[0],
+        DOWN to TextureRegion(img, 0, 0, 3 * 24, 1 * 32).split(24, 32)[0],
+        RIGHT to TextureRegion(img, 0, 64, 3 * 24, 1 * 32).split(24, 32)[0],
     )
 
     init {
@@ -37,6 +52,8 @@ class Player(initialPosition: Vector2, private val canMove: (Character, Rectangl
                         Keys.RIGHT -> RIGHT
                         else -> throw IllegalStateException()
                     }
+                    walking = true
+                    walkAnimation = Animation(0.2f, com.badlogic.gdx.utils.Array(walkFrames[direction]), LOOP_PINGPONG)
                     return true
                 }
                 return super.keyDown(event, keycode)
@@ -45,6 +62,8 @@ class Player(initialPosition: Vector2, private val canMove: (Character, Rectangl
             override fun keyUp(event: InputEvent, keycode: Int): Boolean {
                 if (keyDown == keycode) {
                     keyDown = null
+                    walking = false
+                    walkAnimationTime = 0f
                     return true
                 }
                 return super.keyUp(event, keycode)
@@ -60,26 +79,43 @@ class Player(initialPosition: Vector2, private val canMove: (Character, Rectangl
 
     override fun act(delta: Float) {
         super.act(delta)
+
+        walkAnimationTime += delta
+
         keyDown?.let {
             val targetPosition = Vector2(
                 x + delta * when (it) {
                     Keys.RIGHT -> MOVEMENT_DISTANCE
                     Keys.LEFT -> -MOVEMENT_DISTANCE
                     else -> 0
-                }, y + delta * when (it) {
+                } * WALK_SPEED, y + delta * when (it) {
                     Keys.UP -> MOVEMENT_DISTANCE
                     Keys.DOWN -> -MOVEMENT_DISTANCE
                     else -> 0
-                }
+                } * WALK_SPEED
             )
 
-            if (canMove(this, calculateHitBox(targetPosition))) {
+            if (canMove(calculateHitBox(targetPosition))) {
                 setPosition(targetPosition)
             }
         }
     }
 
+    override fun draw(batch: Batch, parentAlpha: Float) {
+        val localWalkAnimation = walkAnimation
+
+        if (walking && localWalkAnimation != null) {
+            val currentFrame = localWalkAnimation.getKeyFrame(walkAnimationTime, true)
+            batch.draw(currentFrame, x, y)
+        } else {
+            batch.draw(sprite, x, y)
+        }
+    }
+
+    override fun positionChanged() = onPositionChanged()
+
     companion object {
+        private const val WALK_SPEED = 1.5f
         private const val MOVEMENT_DISTANCE = 16
     }
 }

@@ -19,11 +19,15 @@ class MainScreen : ScreenAdapter() {
         stage.addActor(rival)
         characters.add(rival)
 
-        val player = Player(Vector2(10f, 10f)) { self, targetHitBox ->
-            characters
-                .filterNot { it == self}
-                .none { it.hitBox.overlaps(targetHitBox) }
-        }
+        val player = Player(
+            initialPosition = Vector2(10f, 10f),
+            onPositionChanged = { sortActors() },
+            canMove = { targetHitBox ->
+                characters
+                    .filterNot { it is Player }
+                    .none { it.hitBox.overlaps(targetHitBox) }
+            }
+        )
         stage.addActor(player)
         characters.add(player)
 
@@ -31,6 +35,15 @@ class MainScreen : ScreenAdapter() {
 
         stage.isDebugAll = false
     }
+
+    private fun Player.sortActors() =
+        this@MainScreen.stage.actors.sort { a, b ->
+            when {
+                a !is Player -> if (a.y > y) -1 else 1
+                b !is Player -> if (b.y > y) 1 else -1
+                else -> 0
+            }
+        }
 
     override fun render(delta: Float) {
         ScreenUtils.clear(1f, 1f, 0f, 0f)
