@@ -12,6 +12,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlin.math.max
 import kotlin.math.min
 
 class Rival(initialPosition: Vector2, canMove: Character.(Rectangle) -> Boolean) : Character(canMove) {
@@ -24,7 +25,7 @@ class Rival(initialPosition: Vector2, canMove: Character.(Rectangle) -> Boolean)
         RIGHT to Sprite(img, 24, 64, 24, 32),
     )
 
-    private var targetPosition: Vector2? = null
+    private var targetWalkPosition: Vector2? = null
 
     init {
         setPosition(initialPosition)
@@ -38,8 +39,21 @@ class Rival(initialPosition: Vector2, canMove: Character.(Rectangle) -> Boolean)
     }
 
     private fun move(direction: Direction) {
-        if (targetPosition != null) return
-        targetPosition = Vector2(x + 8f, y)
+        if (targetWalkPosition != null) return
+
+        val diff = 8f
+        targetWalkPosition = Vector2(
+            x + when (direction) {
+                LEFT -> -diff
+                RIGHT -> diff
+                else -> 0f
+            },
+            y + when (direction) {
+                DOWN -> -diff
+                UP -> diff
+                else -> 0f
+            }
+        )
     }
 
     override val hitBox: Rectangle
@@ -48,16 +62,54 @@ class Rival(initialPosition: Vector2, canMove: Character.(Rectangle) -> Boolean)
     override fun act(delta: Float) {
         super.act(delta)
 
-        targetPosition?.let {
-            val toMove = calculateWalkTargetPosition(delta, RIGHT).x - position.x
-            val remainingToMove = it.x - x
-            val diff = min(toMove, remainingToMove)
-            println("x: $x, toMove: $toMove, remainingToMove: $remainingToMove, diff: $diff")
-            x += diff
+        targetWalkPosition?.let { walk(delta, it) }
+    }
 
-            if (position == it) {
-                targetPosition = null
+    private fun walk(delta: Float, targetPosition: Vector2) {
+        val direction = when {
+            targetPosition.y > y -> UP
+            targetPosition.y < y -> DOWN
+            targetPosition.x > x -> RIGHT
+            targetPosition.x < x -> LEFT
+            else -> return
+        }
+
+        val walkDeltaPosition = calculateWalkDeltaPosition(delta, direction)
+
+        if (!canMove(calculateHitBox(walkDeltaPosition))) {
+            println("Can't move!")
+            targetWalkPosition = null
+            return
+        }
+
+        val walkDeltaDiff: Float
+        val availableDiff: Float
+        when (direction) {
+            UP, DOWN -> {
+                walkDeltaDiff = walkDeltaPosition.y - position.y
+                availableDiff = targetPosition.y - y
             }
+
+            LEFT, RIGHT -> {
+                walkDeltaDiff = walkDeltaPosition.x - position.x
+                availableDiff = targetPosition.x - x
+            }
+        }
+
+        val coercedDiff = when (direction) {
+            RIGHT, UP -> min(walkDeltaDiff, availableDiff)
+            LEFT, DOWN -> max(walkDeltaDiff, availableDiff)
+        }
+
+        println("walkDeltaDiff: $walkDeltaDiff, availableDiff: $availableDiff, coercedDiff: $coercedDiff")
+
+        when (direction) {
+            UP, DOWN -> y += coercedDiff
+            LEFT, RIGHT -> x += coercedDiff
+        }
+
+        if (position == targetPosition) {
+            targetWalkPosition = null
         }
     }
 }

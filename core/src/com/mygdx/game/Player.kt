@@ -74,9 +74,6 @@ class Player(initialPosition: Vector2, private val onPositionChanged: Player.() 
     override val hitBox: Rectangle
         get() = calculateHitBox(position)
 
-    private fun calculateHitBox(position: Vector2): Rectangle =
-        Rectangle(position.x + sprite.width / 2 - 5, position.y + 2, 10f, 10f)
-
     override fun act(delta: Float) {
         super.act(delta)
 
@@ -84,10 +81,10 @@ class Player(initialPosition: Vector2, private val onPositionChanged: Player.() 
 
         keyDown?.let { key ->
             key.asDirection?.let { direction ->
-                val targetPosition = calculateWalkTargetPosition(delta, direction)
+                val walkDeltaPosition = calculateWalkDeltaPosition(delta, direction)
 
-                if (canMove(calculateHitBox(targetPosition))) {
-                    setPosition(targetPosition)
+                if (canMove(calculateHitBox(walkDeltaPosition))) {
+                    setPosition(walkDeltaPosition)
                 }
             }
         }

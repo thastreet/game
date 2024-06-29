@@ -42,7 +42,10 @@ abstract class Character(protected val canMove: Character.(Rectangle) -> Boolean
         batch.draw(sprite, x, y)
     }
 
-    protected fun calculateWalkTargetPosition(delta: Float, direction: Direction): Vector2 =
+    protected fun calculateHitBox(position: Vector2): Rectangle =
+        Rectangle(position.x + sprite.width / 2 - 5, position.y + 2, 10f, 10f)
+
+    protected fun calculateWalkDeltaPosition(delta: Float, direction: Direction): Vector2 =
         Vector2(
             x + delta * when (direction) {
                 RIGHT -> MOVEMENT_DISTANCE
