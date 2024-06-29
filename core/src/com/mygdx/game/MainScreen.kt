@@ -8,6 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.utils.Scaling
 import com.badlogic.gdx.utils.ScreenUtils
 import com.badlogic.gdx.utils.viewport.ScalingViewport
+import com.mygdx.game.Character.Companion.MOVEMENT_DISTANCE
 
 class MainScreen : ScreenAdapter() {
     private val stage = Stage(ScalingViewport(Scaling.stretch, Consts.SCREEN_WIDTH.toFloat(), Consts.SCREEN_HEIGHT.toFloat()))
@@ -17,14 +18,21 @@ class MainScreen : ScreenAdapter() {
         Gdx.input.inputProcessor = stage
 
         val rival = Rival(
-            initialPosition = Vector2(30f, 10f),
+            initialPosition = Vector2(MOVEMENT_DISTANCE * 2f, MOVEMENT_DISTANCE * 2f),
             canMove = { canMove(it) },
         )
         stage.addActor(rival)
         characters.add(rival)
 
+        val npc = Npc(
+            initialPosition = Vector2(MOVEMENT_DISTANCE * 3f, MOVEMENT_DISTANCE * 3f),
+            canMove = { canMove(it) }
+        )
+        stage.addActor(npc)
+        characters.add(npc)
+
         val player = Player(
-            initialPosition = Vector2(10f, 10f),
+            initialPosition = Vector2(0f, 0f),
             onPositionChanged = { sortActors() },
             canMove = { canMove(it) },
         )
@@ -39,7 +47,7 @@ class MainScreen : ScreenAdapter() {
     private fun Character.canMove(hitBox: Rectangle): Boolean =
         characters
             .filterNot { it == this }
-            .none { it.hitBox.overlaps(hitBox) }
+            .none { it.calculateHitBox().overlaps(hitBox) }
 
     private fun Player.sortActors() =
         this@MainScreen.stage.actors.sort { a, b ->
