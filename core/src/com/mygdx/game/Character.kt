@@ -1,14 +1,19 @@
 package com.mygdx.game
 
+import com.badlogic.gdx.Input.Keys
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g2d.Sprite
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.math.Rectangle
+import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.mygdx.game.Character.Direction.DOWN
+import com.mygdx.game.Character.Direction.LEFT
+import com.mygdx.game.Character.Direction.RIGHT
+import com.mygdx.game.Character.Direction.UP
 
-abstract class Character : Actor() {
+abstract class Character(protected val canMove: Character.(Rectangle) -> Boolean) : Actor() {
     enum class Direction {
         UP,
         LEFT,
@@ -35,5 +40,23 @@ abstract class Character : Actor() {
 
     override fun draw(batch: Batch, parentAlpha: Float) {
         batch.draw(sprite, x, y)
+    }
+
+    protected fun calculateWalkTargetPosition(delta: Float, direction: Direction): Vector2 =
+        Vector2(
+            x + delta * when (direction) {
+                RIGHT -> MOVEMENT_DISTANCE
+                LEFT -> -MOVEMENT_DISTANCE
+                else -> 0
+            } * WALK_SPEED, y + delta * when (direction) {
+                UP -> MOVEMENT_DISTANCE
+                DOWN -> -MOVEMENT_DISTANCE
+                else -> 0
+            } * WALK_SPEED
+        )
+
+    companion object {
+        const val WALK_SPEED = 1.5f
+        const val MOVEMENT_DISTANCE = 16
     }
 }

@@ -16,7 +16,7 @@ import com.mygdx.game.Character.Direction.LEFT
 import com.mygdx.game.Character.Direction.RIGHT
 import com.mygdx.game.Character.Direction.UP
 
-class Player(initialPosition: Vector2, private val onPositionChanged: Player.() -> Unit, private val canMove: (Rectangle) -> Boolean) : Character() {
+class Player(initialPosition: Vector2, private val onPositionChanged: Player.() -> Unit, canMove: Character.(Rectangle) -> Boolean) : Character(canMove) {
     private val img = Texture("RSE Protags 01.png")
     private var keyDown: Int? = null
 
@@ -72,31 +72,23 @@ class Player(initialPosition: Vector2, private val onPositionChanged: Player.() 
     }
 
     override val hitBox: Rectangle
-        get() = calculateHitBox(Vector2(x, y))
+        get() = calculateHitBox(position)
 
     private fun calculateHitBox(position: Vector2): Rectangle =
-        Rectangle(position.x + sprite.width / 4, position.y + 2, sprite.width / 2, sprite.height / 3)
+        Rectangle(position.x + sprite.width / 2 - 5, position.y + 2, 10f, 10f)
 
     override fun act(delta: Float) {
         super.act(delta)
 
         walkAnimationTime += delta
 
-        keyDown?.let {
-            val targetPosition = Vector2(
-                x + delta * when (it) {
-                    Keys.RIGHT -> MOVEMENT_DISTANCE
-                    Keys.LEFT -> -MOVEMENT_DISTANCE
-                    else -> 0
-                } * WALK_SPEED, y + delta * when (it) {
-                    Keys.UP -> MOVEMENT_DISTANCE
-                    Keys.DOWN -> -MOVEMENT_DISTANCE
-                    else -> 0
-                } * WALK_SPEED
-            )
+        keyDown?.let { key ->
+            key.asDirection?.let { direction ->
+                val targetPosition = calculateWalkTargetPosition(delta, direction)
 
-            if (canMove(calculateHitBox(targetPosition))) {
-                setPosition(targetPosition)
+                if (canMove(calculateHitBox(targetPosition))) {
+                    setPosition(targetPosition)
+                }
             }
         }
     }
@@ -113,9 +105,4 @@ class Player(initialPosition: Vector2, private val onPositionChanged: Player.() 
     }
 
     override fun positionChanged() = onPositionChanged()
-
-    companion object {
-        private const val WALK_SPEED = 1.5f
-        private const val MOVEMENT_DISTANCE = 16
-    }
 }

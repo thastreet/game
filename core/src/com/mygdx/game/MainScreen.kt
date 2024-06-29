@@ -2,6 +2,7 @@ package com.mygdx.game
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.ScreenAdapter
+import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.utils.Scaling
@@ -15,18 +16,17 @@ class MainScreen : ScreenAdapter() {
     init {
         Gdx.input.inputProcessor = stage
 
-        val rival = Rival(Vector2(30f, 10f))
+        val rival = Rival(
+            initialPosition = Vector2(30f, 10f),
+            canMove = { canMove(it) },
+        )
         stage.addActor(rival)
         characters.add(rival)
 
         val player = Player(
             initialPosition = Vector2(10f, 10f),
             onPositionChanged = { sortActors() },
-            canMove = { targetHitBox ->
-                characters
-                    .filterNot { it is Player }
-                    .none { it.hitBox.overlaps(targetHitBox) }
-            }
+            canMove = { canMove(it) },
         )
         stage.addActor(player)
         characters.add(player)
@@ -35,6 +35,11 @@ class MainScreen : ScreenAdapter() {
 
         stage.isDebugAll = false
     }
+
+    private fun Character.canMove(hitBox: Rectangle): Boolean =
+        characters
+            .filterNot { it == this }
+            .none { it.hitBox.overlaps(hitBox) }
 
     private fun Player.sortActors() =
         this@MainScreen.stage.actors.sort { a, b ->
