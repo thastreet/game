@@ -77,10 +77,10 @@ class Player(initialPosition: Vector2, private val onPositionChanged: Player.() 
     override fun act(delta: Float) {
         super.act(delta)
 
-        walkAnimationTime += delta
-
         keyDown?.let { key ->
             key.asDirection?.let { direction ->
+                walkAnimationTime += delta
+
                 val walkDeltaPosition = calculateWalkDeltaPosition(delta, direction)
 
                 if (canMove(calculateHitBox(walkDeltaPosition))) {

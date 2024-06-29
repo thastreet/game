@@ -1,7 +1,11 @@
 package com.mygdx.game
 
 import com.badlogic.gdx.graphics.Texture
+import com.badlogic.gdx.graphics.g2d.Animation
+import com.badlogic.gdx.graphics.g2d.Animation.PlayMode.LOOP_PINGPONG
+import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g2d.Sprite
+import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.math.Vector2
 import com.mygdx.game.Character.Direction.DOWN
@@ -25,6 +29,17 @@ class Rival(initialPosition: Vector2, canMove: Character.(Rectangle) -> Boolean)
         RIGHT to Sprite(img, 24, 64, 24, 32),
     )
 
+    private var walkAnimation: Animation<TextureRegion>? = null
+    private var walkAnimationTime = 0f
+    private var walking = false
+
+    private val walkFrames = mapOf(
+        UP to TextureRegion(img, 0, 96, 3 * 24, 1 * 32).split(24, 32)[0],
+        LEFT to TextureRegion(img, 0, 32, 3 * 24, 1 * 32).split(24, 32)[0],
+        DOWN to TextureRegion(img, 0, 0, 3 * 24, 1 * 32).split(24, 32)[0],
+        RIGHT to TextureRegion(img, 0, 64, 3 * 24, 1 * 32).split(24, 32)[0],
+    )
+
     private var targetWalkPosition: Vector2? = null
 
     init {
@@ -33,25 +48,29 @@ class Rival(initialPosition: Vector2, canMove: Character.(Rectangle) -> Boolean)
         CoroutineScope(Dispatchers.Default).launch {
             while (true) {
                 delay(2000)
-                move(Direction.entries.random())
+                walk(Direction.entries.random())
             }
         }
     }
 
-    private fun move(direction: Direction) {
+    private fun walk(direction: Direction) {
         if (targetWalkPosition != null) return
 
-        val diff = 8f
+        this.direction = direction
+
+        walking = true
+        walkAnimation = Animation(0.2f, com.badlogic.gdx.utils.Array(walkFrames[direction]), LOOP_PINGPONG)
+
         targetWalkPosition = Vector2(
             x + when (direction) {
-                LEFT -> -diff
-                RIGHT -> diff
-                else -> 0f
+                LEFT -> -MOVEMENT_DISTANCE
+                RIGHT -> MOVEMENT_DISTANCE
+                else -> 0
             },
             y + when (direction) {
-                DOWN -> -diff
-                UP -> diff
-                else -> 0f
+                DOWN -> -MOVEMENT_DISTANCE
+                UP -> MOVEMENT_DISTANCE
+                else -> 0
             }
         )
     }
@@ -78,9 +97,11 @@ class Rival(initialPosition: Vector2, canMove: Character.(Rectangle) -> Boolean)
 
         if (!canMove(calculateHitBox(walkDeltaPosition))) {
             println("Can't move!")
-            targetWalkPosition = null
+            stopWalking()
             return
         }
+
+        walkAnimationTime += delta
 
         val walkDeltaDiff: Float
         val availableDiff: Float
@@ -109,7 +130,24 @@ class Rival(initialPosition: Vector2, canMove: Character.(Rectangle) -> Boolean)
         }
 
         if (position == targetPosition) {
-            targetWalkPosition = null
+            stopWalking()
+        }
+    }
+
+    private fun stopWalking() {
+        targetWalkPosition = null
+        walking = false
+        walkAnimationTime = 0f
+    }
+
+    override fun draw(batch: Batch, parentAlpha: Float) {
+        val localWalkAnimation = walkAnimation
+
+        if (walking && localWalkAnimation != null) {
+            val currentFrame = localWalkAnimation.getKeyFrame(walkAnimationTime, true)
+            batch.draw(currentFrame, x, y)
+        } else {
+            batch.draw(sprite, x, y)
         }
     }
 }
