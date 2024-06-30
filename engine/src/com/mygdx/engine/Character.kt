@@ -1,4 +1,4 @@
-package com.mygdx.game
+package com.mygdx.engine
 
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.g2d.Batch
@@ -8,9 +8,11 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.Actor
-import com.mygdx.game.Character.CharacterStateEnum.IDLE
-import com.mygdx.game.Character.CharacterStateEnum.WALKING
-import com.mygdx.game.Character.Direction.DOWN
+import com.mygdx.engine.Character.CharacterStateEnum.IDLE
+import com.mygdx.engine.Character.CharacterStateEnum.WALKING
+import com.mygdx.engine.Character.Direction.DOWN
+import com.mygdx.engine.CharacterState.Idle
+import com.mygdx.engine.CharacterState.Walking
 import kotlin.Array
 import kotlin.Boolean
 import kotlin.Float
@@ -34,8 +36,8 @@ abstract class Character(
 
     var direction = DOWN
 
-    protected abstract val idleState: CharacterState.Idle
-    protected open val walkingState: CharacterState.Walking? = null
+    protected abstract val idleState: Idle
+    protected open val walkingState: Walking? = null
 
     private val states: Map<CharacterStateEnum, CharacterState> by lazy {
         buildMap {
@@ -65,19 +67,19 @@ abstract class Character(
             return
 
         states[WALKING]?.let {
-            (it as CharacterState.Walking).enter(direction)
+            (it as Walking).enter(direction)
         }
         stateEnum = WALKING
     }
 
     protected fun buildIdleState(idleSprites: Map<Direction, Sprite>) =
-        CharacterState.Idle(
+        Idle(
             character = this,
             idleSprites = idleSprites,
         )
 
     protected fun buildWalkingState(animationSprites: Map<Direction, Array<TextureRegion>>, continueWalking: () -> Direction? = { null }) =
-        CharacterState.Walking(
+        Walking(
             character = this,
             canMove = { canMove(it) },
             animationSprites = animationSprites.mapValues { GdxArray(it.value) },

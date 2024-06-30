@@ -8,10 +8,11 @@ import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.InputListener
-import com.mygdx.game.Character.Direction.DOWN
-import com.mygdx.game.Character.Direction.LEFT
-import com.mygdx.game.Character.Direction.RIGHT
-import com.mygdx.game.Character.Direction.UP
+import com.mygdx.engine.Character
+import com.mygdx.engine.Character.Direction.DOWN
+import com.mygdx.engine.Character.Direction.LEFT
+import com.mygdx.engine.Character.Direction.RIGHT
+import com.mygdx.engine.Character.Direction.UP
 
 class Player(initialPosition: Vector2, private val onPositionChanged: Player.() -> Unit, canMove: Character.(Rectangle) -> Boolean) : Character("Player", initialPosition, canMove) {
     private val img = Texture("RSE Protags 01.png")

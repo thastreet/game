@@ -5,10 +5,11 @@ import com.badlogic.gdx.graphics.g2d.Sprite
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.math.Vector2
-import com.mygdx.game.Character.Direction.DOWN
-import com.mygdx.game.Character.Direction.LEFT
-import com.mygdx.game.Character.Direction.RIGHT
-import com.mygdx.game.Character.Direction.UP
+import com.mygdx.engine.Character
+import com.mygdx.engine.Character.Direction.DOWN
+import com.mygdx.engine.Character.Direction.LEFT
+import com.mygdx.engine.Character.Direction.RIGHT
+import com.mygdx.engine.Character.Direction.UP
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay

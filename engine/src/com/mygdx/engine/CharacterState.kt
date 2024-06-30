@@ -1,4 +1,4 @@
-package com.mygdx.game
+package com.mygdx.engine
 
 import com.badlogic.gdx.graphics.g2d.Animation
 import com.badlogic.gdx.graphics.g2d.Animation.PlayMode.LOOP_PINGPONG
@@ -8,13 +8,13 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.utils.Array
-import com.mygdx.game.Character.Companion.MOVEMENT_DISTANCE
-import com.mygdx.game.Character.Companion.WALK_SPEED
-import com.mygdx.game.Character.Direction
-import com.mygdx.game.Character.Direction.DOWN
-import com.mygdx.game.Character.Direction.LEFT
-import com.mygdx.game.Character.Direction.RIGHT
-import com.mygdx.game.Character.Direction.UP
+import com.mygdx.engine.Character.Companion.MOVEMENT_DISTANCE
+import com.mygdx.engine.Character.Companion.WALK_SPEED
+import com.mygdx.engine.Character.Direction
+import com.mygdx.engine.Character.Direction.DOWN
+import com.mygdx.engine.Character.Direction.LEFT
+import com.mygdx.engine.Character.Direction.RIGHT
+import com.mygdx.engine.Character.Direction.UP
 import kotlin.math.max
 import kotlin.math.min
 

@@ -4,10 +4,11 @@ import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Sprite
 import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.math.Vector2
-import com.mygdx.game.Character.Direction.DOWN
-import com.mygdx.game.Character.Direction.LEFT
-import com.mygdx.game.Character.Direction.RIGHT
-import com.mygdx.game.Character.Direction.UP
+import com.mygdx.engine.Character
+import com.mygdx.engine.Character.Direction.DOWN
+import com.mygdx.engine.Character.Direction.LEFT
+import com.mygdx.engine.Character.Direction.RIGHT
+import com.mygdx.engine.Character.Direction.UP
 
 class Npc(initialPosition: Vector2, canMove: Character.(Rectangle) -> Boolean) : Character("Npc", initialPosition, canMove) {
     private val img = Texture("RSE Peds 04.png")

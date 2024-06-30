@@ -42,7 +42,6 @@ allprojects {
 project(":desktop") {
     apply plugin: "kotlin"
 
-
     dependencies {
         implementation project(":core")
         api "com.badlogicgames.gdx:gdx-backend-lwjgl3:$gdxVersion"
@@ -52,6 +51,17 @@ project(":desktop") {
 }
 
 project(":core") {
+    apply plugin: "kotlin"
+
+    dependencies {
+        implementation project(":engine")
+        api "com.badlogicgames.gdx:gdx:$gdxVersion"
+        api "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
+        api "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.9.0-RC"
+    }
+}
+
+project(":engine") {
     apply plugin: "kotlin"
 
     dependencies {

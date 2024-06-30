@@ -8,7 +8,8 @@ import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.utils.Scaling
 import com.badlogic.gdx.utils.ScreenUtils
 import com.badlogic.gdx.utils.viewport.ScalingViewport
-import com.mygdx.game.Character.Companion.MOVEMENT_DISTANCE
+import com.mygdx.engine.Character
+import com.mygdx.engine.Character.Companion.MOVEMENT_DISTANCE
 
 class MainScreen : ScreenAdapter() {
     private val stage = Stage(ScalingViewport(Scaling.stretch, Consts.SCREEN_WIDTH.toFloat(), Consts.SCREEN_HEIGHT.toFloat()))
