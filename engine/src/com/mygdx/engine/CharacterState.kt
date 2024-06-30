@@ -18,14 +18,14 @@ import com.mygdx.engine.Character.Direction.UP
 import kotlin.math.max
 import kotlin.math.min
 
-sealed class CharacterState(protected val character: Character) {
+sealed class CharacterState {
     open fun update(delta: Float) {}
 
     abstract fun draw(batch: Batch)
 
     abstract val textureRegion: TextureRegion
 
-    class Idle(character: Character, private val idleSprites: Map<Direction, Sprite>) : CharacterState(character) {
+    class Idle(private val character: Character, private val idleSprites: Map<Direction, Sprite>) : CharacterState() {
         override fun draw(batch: Batch) {
             batch.draw(textureRegion, character.x, character.y)
         }
@@ -35,13 +35,13 @@ sealed class CharacterState(protected val character: Character) {
     }
 
     class Walking(
-        character: Character,
-        val canMove: (Rectangle) -> Boolean,
+        private val character: Character,
+        private val canMove: (Rectangle) -> Boolean,
         private val animationSprites: Map<Direction, Array<TextureRegion>>,
         private val onExit: () -> Unit,
         val continueWalking: () -> Direction? = { null }
     ) :
-        CharacterState(character) {
+        CharacterState() {
         private var walkAnimationTime = 0f
 
         private var targetPosition: Vector2? = null

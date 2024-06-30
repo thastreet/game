@@ -14,19 +14,13 @@ import com.mygdx.engine.Character.Direction.DOWN
 import com.mygdx.engine.CharacterState.Idle
 import com.mygdx.engine.CharacterState.Walking
 import kotlin.Array
-import kotlin.Boolean
-import kotlin.Float
-import kotlin.String
-import kotlin.getValue
-import kotlin.lazy
-import kotlin.let
 import com.badlogic.gdx.utils.Array as GdxArray
 
 abstract class Character(
     name: String,
     initialPosition: Vector2,
-    private val canMove: Character.(Rectangle) -> Boolean
-) : Actor() {
+    private val collisionHolder: CollisionHolder,
+) : Actor(), Collision {
     enum class Direction {
         UP,
         LEFT,
@@ -81,7 +75,7 @@ abstract class Character(
     protected fun buildWalkingState(animationSprites: Map<Direction, Array<TextureRegion>>, continueWalking: () -> Direction? = { null }) =
         Walking(
             character = this,
-            canMove = { canMove(it) },
+            canMove = { with(collisionHolder) { this@Character.canMove(it) } },
             animationSprites = animationSprites.mapValues { GdxArray(it.value) },
             onExit = { stateEnum = IDLE },
             continueWalking = continueWalking,
@@ -106,6 +100,11 @@ abstract class Character(
     override fun draw(batch: Batch, parentAlpha: Float) {
         state.draw(batch)
     }
+
+    override val hitBox: Rectangle
+        get() = calculateHitBox()
+
+    override val id = name
 
     companion object {
         const val WALK_SPEED = 3f

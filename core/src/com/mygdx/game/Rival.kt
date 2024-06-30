@@ -3,19 +3,19 @@ package com.mygdx.game
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Sprite
 import com.badlogic.gdx.graphics.g2d.TextureRegion
-import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.math.Vector2
 import com.mygdx.engine.Character
 import com.mygdx.engine.Character.Direction.DOWN
 import com.mygdx.engine.Character.Direction.LEFT
 import com.mygdx.engine.Character.Direction.RIGHT
 import com.mygdx.engine.Character.Direction.UP
+import com.mygdx.engine.CollisionHolder
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-class Rival(initialPosition: Vector2, canMove: Character.(Rectangle) -> Boolean) : Character("Rival", initialPosition, canMove) {
+class Rival(initialPosition: Vector2, collisionHolder: CollisionHolder) : Character("Rival", initialPosition, collisionHolder) {
     private val img = Texture("RSE Protags 02.png")
 
     override val idleState = buildIdleState(

@@ -2,53 +2,44 @@ package com.mygdx.game
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.ScreenAdapter
-import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.math.Vector2
-import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.utils.Scaling
 import com.badlogic.gdx.utils.ScreenUtils
 import com.badlogic.gdx.utils.viewport.ScalingViewport
-import com.mygdx.engine.Character
+import com.mygdx.engine.BaseStage
 import com.mygdx.engine.Character.Companion.MOVEMENT_DISTANCE
 
 class MainScreen : ScreenAdapter() {
-    private val stage = Stage(ScalingViewport(Scaling.stretch, Consts.SCREEN_WIDTH.toFloat(), Consts.SCREEN_HEIGHT.toFloat()))
-    private val characters = mutableSetOf<Character>()
+    private val stage = BaseStage(ScalingViewport(Scaling.stretch, Consts.SCREEN_WIDTH.toFloat(), Consts.SCREEN_HEIGHT.toFloat()))
 
     init {
         Gdx.input.inputProcessor = stage
 
-        val rival = Rival(
-            initialPosition = Vector2(MOVEMENT_DISTANCE * 2f, MOVEMENT_DISTANCE * 2f),
-            canMove = { canMove(it) },
+        stage.addCollision(
+            Rival(
+                initialPosition = Vector2(MOVEMENT_DISTANCE * 2f, MOVEMENT_DISTANCE * 2f),
+                collisionHolder = stage,
+            )
         )
-        stage.addActor(rival)
-        characters.add(rival)
 
-        val npc = Npc(
-            initialPosition = Vector2(MOVEMENT_DISTANCE * 4f, MOVEMENT_DISTANCE * 4f),
-            canMove = { canMove(it) }
+        stage.addCollision(
+            Npc(
+                initialPosition = Vector2(MOVEMENT_DISTANCE * 4f, MOVEMENT_DISTANCE * 4f),
+                collisionHolder = stage,
+            )
         )
-        stage.addActor(npc)
-        characters.add(npc)
 
         val player = Player(
             initialPosition = Vector2(0f, 0f),
             onPositionChanged = { sortActors() },
-            canMove = { canMove(it) },
+            collisionHolder = stage,
         )
-        stage.addActor(player)
-        characters.add(player)
+        stage.addCollision(player)
 
         stage.keyboardFocus = player
 
         stage.isDebugAll = false
     }
-
-    private fun Character.canMove(hitBox: Rectangle): Boolean =
-        characters
-            .filterNot { it == this }
-            .none { it.calculateHitBox().overlaps(hitBox) }
 
     private fun Player.sortActors() =
         this@MainScreen.stage.actors.sort { a, b ->

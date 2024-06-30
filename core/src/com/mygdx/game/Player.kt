@@ -4,7 +4,6 @@ import com.badlogic.gdx.Input.Keys
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Sprite
 import com.badlogic.gdx.graphics.g2d.TextureRegion
-import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.InputListener
@@ -13,8 +12,9 @@ import com.mygdx.engine.Character.Direction.DOWN
 import com.mygdx.engine.Character.Direction.LEFT
 import com.mygdx.engine.Character.Direction.RIGHT
 import com.mygdx.engine.Character.Direction.UP
+import com.mygdx.engine.CollisionHolder
 
-class Player(initialPosition: Vector2, private val onPositionChanged: Player.() -> Unit, canMove: Character.(Rectangle) -> Boolean) : Character("Player", initialPosition, canMove) {
+class Player(initialPosition: Vector2, private val onPositionChanged: Player.() -> Unit, collisionHolder: CollisionHolder) : Character("Player", initialPosition, collisionHolder) {
     private val img = Texture("RSE Protags 01.png")
     private val walkingKeys = setOf(Keys.LEFT, Keys.RIGHT, Keys.UP, Keys.DOWN)
     private var keysDown: MutableSet<Int> = mutableSetOf()
