@@ -81,7 +81,7 @@ abstract class Character(
             character = this,
             canMove = { canMove(it) },
             animationSprites = animationSprites.mapValues { GdxArray(it.value) },
-            exit = { stateEnum = IDLE },
+            onExit = { stateEnum = IDLE },
             continueWalking = continueWalking,
         )
 
@@ -106,7 +106,7 @@ abstract class Character(
     }
 
     companion object {
-        const val WALK_SPEED = 1.5f
-        const val MOVEMENT_DISTANCE = 16
+        const val WALK_SPEED = 3f
+        const val MOVEMENT_DISTANCE = 8
     }
 }

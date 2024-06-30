@@ -25,7 +25,7 @@ class MainScreen : ScreenAdapter() {
         characters.add(rival)
 
         val npc = Npc(
-            initialPosition = Vector2(MOVEMENT_DISTANCE * 3f, MOVEMENT_DISTANCE * 3f),
+            initialPosition = Vector2(MOVEMENT_DISTANCE * 4f, MOVEMENT_DISTANCE * 4f),
             canMove = { canMove(it) }
         )
         stage.addActor(npc)

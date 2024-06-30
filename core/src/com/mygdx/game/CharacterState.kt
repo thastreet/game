@@ -38,7 +38,7 @@ sealed class CharacterState(protected val character: Character) {
         character: Character,
         val canMove: (Rectangle) -> Boolean,
         private val animationSprites: Map<Direction, Array<TextureRegion>>,
-        private val exit: () -> Unit,
+        private val onExit: () -> Unit,
         val continueWalking: () -> Direction? = { null }
     ) :
         CharacterState(character) {
@@ -64,6 +64,13 @@ sealed class CharacterState(protected val character: Character) {
             character.direction = direction
         }
 
+        private fun exit() {
+            walkAnimationTime = 0f
+
+            targetPosition = null
+            walkAnimation = null
+        }
+
         override fun update(delta: Float) {
             val targetPosition = this.targetPosition ?: return
 
@@ -81,7 +88,7 @@ sealed class CharacterState(protected val character: Character) {
 
             if (!canMove(character.calculateHitBox(walkDeltaPosition))) {
                 log("Can't move!")
-                onWalkEnded()
+                onTargetPositionReached()
                 return
             }
 
@@ -112,7 +119,7 @@ sealed class CharacterState(protected val character: Character) {
             }
 
             if (character.position == targetPosition) {
-                onWalkEnded()
+                onTargetPositionReached()
             }
         }
 
@@ -129,12 +136,12 @@ sealed class CharacterState(protected val character: Character) {
                 } * WALK_SPEED
             )
 
-        private fun onWalkEnded() {
+        private fun onTargetPositionReached() {
             continueWalking()?.let {
                 enter(it)
             } ?: run {
-                targetPosition = null
                 exit()
+                onExit()
             }
         }
 
