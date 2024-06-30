@@ -20,4 +20,9 @@ class BaseStage(viewport: Viewport) : Stage(viewport), CollisionHolder {
         collisions
             .filterNot { it.id == id }
             .none { it.hitBox.overlaps(hitBox) }
+
+    fun Character.setHasControl() {
+        setIsControllable()
+        keyboardFocus = this
+    }
 }

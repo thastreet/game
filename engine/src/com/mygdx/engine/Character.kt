@@ -8,11 +8,9 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.Actor
-import com.mygdx.engine.Character.CharacterStateEnum.IDLE
-import com.mygdx.engine.Character.CharacterStateEnum.WALKING
 import com.mygdx.engine.Character.Direction.DOWN
-import com.mygdx.engine.CharacterState.Idle
-import com.mygdx.engine.CharacterState.Walking
+import com.mygdx.engine.CharacterStateEnum.IDLE
+import com.mygdx.engine.CharacterStateEnum.WALKING
 import kotlin.Array
 import com.badlogic.gdx.utils.Array as GdxArray
 
@@ -46,17 +44,12 @@ abstract class Character(
     private val state: CharacterState
         get() = states.getValue(stateEnum)
 
-    private enum class CharacterStateEnum {
-        IDLE,
-        WALKING,
-    }
-
     init {
         this.name = name
         setPosition(initialPosition)
     }
 
-    protected fun walk(direction: Direction) {
+    fun walk(direction: Direction) {
         if (stateEnum == WALKING)
             return
 
@@ -66,19 +59,26 @@ abstract class Character(
         stateEnum = WALKING
     }
 
+    fun setIsControllable() {
+        addListener(ControlListener(this))
+    }
+
     protected fun buildIdleState(idleSprites: Map<Direction, Sprite>) =
         Idle(
             character = this,
             idleSprites = idleSprites,
         )
 
-    protected fun buildWalkingState(animationSprites: Map<Direction, Array<TextureRegion>>, continueWalking: () -> Direction? = { null }) =
+    private val controlListener: ControlListener?
+        get() = listeners.firstNotNullOfOrNull { it as? ControlListener }
+
+    protected fun buildWalkingState(animationSprites: Map<Direction, Array<TextureRegion>>) =
         Walking(
             character = this,
             canMove = { with(collisionHolder) { this@Character.canMove(it) } },
             animationSprites = animationSprites.mapValues { GdxArray(it.value) },
             onExit = { stateEnum = IDLE },
-            continueWalking = continueWalking,
+            continueWalking = { controlListener?.keysDown?.firstNotNullOfOrNull { it.asDirection } },
         )
 
     fun calculateHitBox(position: Vector2 = this.position): Rectangle =
@@ -105,6 +105,12 @@ abstract class Character(
         get() = calculateHitBox()
 
     override val id = name
+
+    fun log(message: String) {
+        if (debug) {
+            println("$name state: $message")
+        }
+    }
 
     companion object {
         const val WALK_SPEED = 3f

@@ -29,14 +29,15 @@ class MainScreen : ScreenAdapter() {
             )
         )
 
-        val player = Player(
-            initialPosition = Vector2(0f, 0f),
-            onPositionChanged = { sortActors() },
-            collisionHolder = stage,
+        stage.addCollision(
+            Player(
+                initialPosition = Vector2(0f, 0f),
+                onPositionChanged = { sortActors() },
+                collisionHolder = stage,
+            ).also {
+                with(stage) { it.setHasControl() }
+            }
         )
-        stage.addCollision(player)
-
-        stage.keyboardFocus = player
 
         stage.isDebugAll = false
     }
