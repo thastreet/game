@@ -9,18 +9,17 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.Actor
+import com.mygdx.engine.TileMap.Tileset
 
-class MapActor(tileMap: TileMap) : Actor() {
+class MapActor(private val tileMap: TileMap) : Actor() {
     private data class Tile(
         val position: Vector2,
         val region: TextureRegion,
     )
 
-    private val regions: Map<String, Array<Array<TextureRegion>>> = tileMap.tilesets.associate {
-        val texture = Texture(Gdx.files.internal(it.image))
-        it.name to TextureRegion.split(texture, it.tilewidth, it.tileheight)
-    }
-    private val columns = tileMap.tilesets.first().columns
+    private val regions: Map<String, Array<Array<TextureRegion>>> =
+        tileMap.tilesets
+            .associate { it.name to TextureRegion.split(Texture(Gdx.files.internal(it.image)), it.tilewidth, it.tileheight) }
 
     private val collisionGlobalIds: Set<Int> =
         tileMap.tilesets
@@ -43,21 +42,12 @@ class MapActor(tileMap: TileMap) : Actor() {
                             return@mapIndexedNotNull null
                         }
 
-                        val tileset = tileMap.tilesets.first { globalId in it.firstgid..it.firstgid + it.tilecount }
-                        val textureIndex = globalId - tileset.firstgid
+                        val tileset = getTileset(globalId)
 
-
-                        val tileJ = tileIndex / tileMap.width
-                        val tileI = tileIndex - tileJ * tileMap.width
-                        val x = tileI * tileset.tilewidth
-                        val y = (tileMap.height - 1) * tileset.tileheight - tileJ * tileset.tileheight
-                        val position = Vector2(x.toFloat(), y.toFloat())
-
-                        val textureJ = textureIndex / columns
-                        val textureI = textureIndex - (textureJ * columns)
-                        val region = regions.getValue(tileset.name)[textureJ][textureI]
-
-                        Tile(position, region)
+                        Tile(
+                            position = getTilePosition(tileIndex, tileset),
+                            region = getRegion(globalId, tileset),
+                        )
                     }
             }
             .flatten()
@@ -68,19 +58,42 @@ class MapActor(tileMap: TileMap) : Actor() {
                 layer.data
                     .mapIndexedNotNull { tileIndex, globalId ->
                         if (globalId in collisionGlobalIds) {
-                            val tileset = tileMap.tilesets.first { globalId in it.firstgid..it.firstgid + it.tilecount }
-                            val tileJ = tileIndex / tileMap.width
-                            val tileI = tileIndex - tileJ * tileMap.width
-                            val x = tileI * tileset.tilewidth
-                            val y = (tileMap.height - 1) * tileset.tileheight - tileJ * tileset.tileheight
+                            val tileset = getTileset(globalId)
 
-                            Collision.Static(Rectangle(x.toFloat(), y.toFloat(), tileset.tilewidth.toFloat(), tileset.tileheight.toFloat()))
+                            Collision.Static(getHitBox(tileIndex, tileset))
                         } else {
                             null
                         }
                     }
             }
             .flatten()
+
+    private fun getTileset(globalId: Int): Tileset =
+        tileMap.tilesets.first { globalId in it.firstgid..it.firstgid + it.tilecount }
+
+    private fun getTilePosition(tileIndex: Int, tileset: Tileset): Vector2 {
+        val j = tileIndex / tileMap.width
+        val i = tileIndex - j * tileMap.width
+        val x = i * tileset.tilewidth
+        val y = (tileMap.height - 1) * tileset.tileheight - j * tileset.tileheight
+
+        return Vector2(x.toFloat(), y.toFloat())
+    }
+
+    private fun getRegion(globalId: Int, tileset: Tileset): TextureRegion {
+        val textureIndex = globalId - tileset.firstgid
+        val j = textureIndex / tileset.columns
+        val i = textureIndex - j * tileset.columns
+        return tileset.regions[j][i]
+    }
+
+    private val Tileset.regions: Array<Array<TextureRegion>>
+        get() = this@MapActor.regions.getValue(name)
+
+    private fun getHitBox(tileIndex: Int, tileset: Tileset): Rectangle =
+        getTilePosition(tileIndex, tileset).let { position ->
+            Rectangle(position.x, position.y, tileset.tilewidth.toFloat(), tileset.tileheight.toFloat())
+        }
 
     override fun draw(batch: Batch, parentAlpha: Float) {
         tiles.forEach {
