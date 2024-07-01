@@ -11,7 +11,7 @@ import com.mygdx.engine.Character.Direction.RIGHT
 import com.mygdx.engine.Character.Direction.UP
 import com.mygdx.engine.CollisionHolder
 
-class Player(initialPosition: Vector2, private val onPositionChanged: Player.() -> Unit, collisionHolder: CollisionHolder) : Character("Player", initialPosition, collisionHolder) {
+class Player(initialPosition: Vector2, collisionHolder: CollisionHolder) : Character("Player", initialPosition, collisionHolder) {
     private val img = Texture("RSE Protags 01.png")
 
     override val idleState = buildIdleState(
@@ -31,6 +31,4 @@ class Player(initialPosition: Vector2, private val onPositionChanged: Player.() 
             RIGHT to TextureRegion(img, 0, 64, 3 * 24, 1 * 32).split(24, 32)[0],
         ),
     )
-
-    override fun positionChanged() = onPositionChanged()
 }

@@ -2,18 +2,29 @@ package com.mygdx.game
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.ScreenAdapter
+import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.utils.Scaling
 import com.badlogic.gdx.utils.ScreenUtils
 import com.badlogic.gdx.utils.viewport.ScalingViewport
 import com.mygdx.engine.BaseStage
 import com.mygdx.engine.Character.Companion.MOVEMENT_DISTANCE
+import com.mygdx.engine.MapActor
+import com.mygdx.engine.TileMap
+import com.mygdx.engine.json
 
 class MainScreen : ScreenAdapter() {
     private val stage = BaseStage(ScalingViewport(Scaling.stretch, Consts.SCREEN_WIDTH.toFloat(), Consts.SCREEN_HEIGHT.toFloat()))
 
     init {
         Gdx.input.inputProcessor = stage
+
+        stage.addActor(
+            MapActor(
+                texture = Texture(Gdx.files.internal("RS Outside_A2.png")),
+                tileMap = json.decodeFromString<TileMap>(Gdx.files.internal("map1.tmj").readString())
+            )
+        )
 
         stage.addCollision(
             Rival(
@@ -32,7 +43,6 @@ class MainScreen : ScreenAdapter() {
         stage.addCollision(
             Player(
                 initialPosition = Vector2(0f, 0f),
-                onPositionChanged = { sortActors() },
                 collisionHolder = stage,
             ).also {
                 with(stage) { it.setHasControl() }
@@ -41,15 +51,6 @@ class MainScreen : ScreenAdapter() {
 
         stage.isDebugAll = false
     }
-
-    private fun Player.sortActors() =
-        this@MainScreen.stage.actors.sort { a, b ->
-            when {
-                a !is Player -> if (a.y > y) -1 else 1
-                b !is Player -> if (b.y > y) 1 else -1
-                else -> 0
-            }
-        }
 
     override fun render(delta: Float) {
         ScreenUtils.clear(1f, 1f, 0f, 0f)
