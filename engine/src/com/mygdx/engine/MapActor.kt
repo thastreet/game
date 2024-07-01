@@ -1,6 +1,7 @@
 package com.mygdx.engine
 
 import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.files.FileHandle
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Batch
@@ -11,11 +12,13 @@ import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.mygdx.engine.TileMap.Tileset
 
-class MapActor(private val tileMap: TileMap) : Actor() {
+class MapActor(file: FileHandle) : Actor() {
     private data class Tile(
         val position: Vector2,
         val region: TextureRegion,
     )
+
+    private val tileMap = json.decodeFromString<TileMap>(file.readString())
 
     private val regions: Map<String, Array<Array<TextureRegion>>> =
         tileMap.tilesets

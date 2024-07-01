@@ -9,8 +9,6 @@ import com.badlogic.gdx.utils.viewport.ScalingViewport
 import com.mygdx.engine.BaseStage
 import com.mygdx.engine.Character.Companion.MOVEMENT_DISTANCE
 import com.mygdx.engine.MapActor
-import com.mygdx.engine.TileMap
-import com.mygdx.engine.json
 
 class MainScreen : ScreenAdapter() {
     private val stage = BaseStage(ScalingViewport(Scaling.stretch, Consts.SCREEN_WIDTH.toFloat(), Consts.SCREEN_HEIGHT.toFloat()))
@@ -20,7 +18,7 @@ class MainScreen : ScreenAdapter() {
 
         stage.addMap(
             MapActor(
-                tileMap = json.decodeFromString<TileMap>(Gdx.files.internal("map1.tmj").readString()),
+                file = Gdx.files.internal("map1.tmj"),
             )
         )
 
