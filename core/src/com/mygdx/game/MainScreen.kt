@@ -20,7 +20,7 @@ class MainScreen : ScreenAdapter() {
 
         stage.addMap(
             MapActor(
-                tileMap = json.decodeFromString<TileMap>(Gdx.files.internal("map1.tmj").readString())
+                tileMap = json.decodeFromString<TileMap>(Gdx.files.internal("map1.tmj").readString()),
             )
         )
 
@@ -40,7 +40,7 @@ class MainScreen : ScreenAdapter() {
 
         stage.addCharacter(
             Player(
-                initialPosition = Vector2(0f, 0f),
+                initialPosition = Vector2(MOVEMENT_DISTANCE * 20f, 0f),
                 collisionHolder = stage,
             ).also {
                 with(stage) { it.setHasControl() }

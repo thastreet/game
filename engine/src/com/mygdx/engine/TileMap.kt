@@ -1,16 +1,11 @@
 package com.mygdx.engine
 
-import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
 data class TileMap(
     val width: Int,
     val height: Int,
-    @SerialName("tilewidth")
-    val tileWidth: Int,
-    @SerialName("tileheight")
-    val tileHeight: Int,
     val layers: List<Layer>,
     val tilesets: List<Tileset>,
 ) {
@@ -23,7 +18,11 @@ data class TileMap(
     data class Tileset(
         val columns: Int,
         val firstgid: Int,
+        val tilecount: Int,
         val image: String,
+        val tilewidth: Int,
+        val tileheight: Int,
+        val name: String,
         val tiles: List<Tile>,
     ) {
         @Serializable
