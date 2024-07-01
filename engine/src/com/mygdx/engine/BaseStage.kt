@@ -1,24 +1,39 @@
 package com.mygdx.engine
 
 import com.badlogic.gdx.math.Rectangle
-import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.utils.viewport.Viewport
+import com.mygdx.engine.Collision.Dynamic
+import com.mygdx.engine.Collision.Static
 
 class BaseStage(viewport: Viewport) : Stage(viewport), CollisionHolder {
     private val collisions = mutableSetOf<Collision>()
 
-    fun addCollision(collision: Collision) {
-        collisions.add(collision)
+    fun addCharacter(character: Character) {
+        addCollision(character)
+        addActor(character)
+    }
 
-        (collision as? Actor)?.let {
-            addActor(it)
+    fun addMap(map: MapActor) {
+        addActor(map)
+
+        map.collisions.forEach {
+            addCollision(it)
         }
     }
 
-    override fun Collision.canMove(hitBox: Rectangle): Boolean =
+    private fun addCollision(collision: Collision) {
+        collisions.add(collision)
+    }
+
+    override fun Dynamic.canMove(hitBox: Rectangle): Boolean =
         collisions
-            .filterNot { it.id == id }
+            .filter { collision ->
+                when (collision) {
+                    is Dynamic -> collision.id != id
+                    is Static -> true
+                }
+            }
             .none { it.hitBox.overlaps(hitBox) }
 
     fun Character.setHasControl() {

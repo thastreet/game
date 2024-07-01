@@ -2,7 +2,6 @@ package com.mygdx.game
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.ScreenAdapter
-import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.utils.Scaling
 import com.badlogic.gdx.utils.ScreenUtils
@@ -19,28 +18,27 @@ class MainScreen : ScreenAdapter() {
     init {
         Gdx.input.inputProcessor = stage
 
-        stage.addActor(
+        stage.addMap(
             MapActor(
-                texture = Texture(Gdx.files.internal("RS Outside_A2.png")),
                 tileMap = json.decodeFromString<TileMap>(Gdx.files.internal("map1.tmj").readString())
             )
         )
 
-        stage.addCollision(
+        stage.addCharacter(
             Rival(
                 initialPosition = Vector2(MOVEMENT_DISTANCE * 2f, MOVEMENT_DISTANCE * 2f),
                 collisionHolder = stage,
             )
         )
 
-        stage.addCollision(
+        stage.addCharacter(
             Npc(
                 initialPosition = Vector2(MOVEMENT_DISTANCE * 4f, MOVEMENT_DISTANCE * 4f),
                 collisionHolder = stage,
             )
         )
 
-        stage.addCollision(
+        stage.addCharacter(
             Player(
                 initialPosition = Vector2(0f, 0f),
                 collisionHolder = stage,

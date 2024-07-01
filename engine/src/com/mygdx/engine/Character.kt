@@ -18,7 +18,7 @@ abstract class Character(
     name: String,
     initialPosition: Vector2,
     private val collisionHolder: CollisionHolder,
-) : Actor(), Collision {
+) : Actor(), Collision.Dynamic {
     enum class Direction {
         UP,
         LEFT,
