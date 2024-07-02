@@ -17,22 +17,24 @@ import kotlinx.coroutines.launch
 
 class Rival(initialPosition: Vector2, collisionHolder: CollisionHolder) : Character("Rival", initialPosition, collisionHolder) {
     private val img = Texture("RSE Protags 02.png")
+    private val srcWidth = 3 * MOVEMENT_DISTANCE
+    private val srcHeight = 4 * MOVEMENT_DISTANCE
 
     override val idleState = buildIdleState(
         idleSprites = mapOf(
-            UP to Sprite(img, 24, 96, 24, 32),
-            LEFT to Sprite(img, 24, 32, 24, 32),
-            DOWN to Sprite(img, 24, 0, 24, 32),
-            RIGHT to Sprite(img, 24, 64, 24, 32),
+            UP to Sprite(img, srcWidth, 3 * srcHeight, srcWidth, srcHeight),
+            LEFT to Sprite(img, srcWidth, 1 * srcHeight, srcWidth, srcHeight),
+            DOWN to Sprite(img, srcWidth, 0 * srcHeight, srcWidth, srcHeight),
+            RIGHT to Sprite(img, srcWidth, 2 * srcHeight, srcWidth, srcHeight),
         ),
     )
 
     override val walkingState = buildWalkingState(
         animationSprites = mapOf(
-            UP to TextureRegion(img, 0, 96, 3 * 24, 1 * 32).split(24, 32)[0],
-            LEFT to TextureRegion(img, 0, 32, 3 * 24, 1 * 32).split(24, 32)[0],
-            DOWN to TextureRegion(img, 0, 0, 3 * 24, 1 * 32).split(24, 32)[0],
-            RIGHT to TextureRegion(img, 0, 64, 3 * 24, 1 * 32).split(24, 32)[0],
+            UP to TextureRegion(img, 0, 3 * srcHeight, 3 * srcWidth, srcHeight).split(srcWidth, srcHeight)[0],
+            LEFT to TextureRegion(img, 0, 1 * srcHeight, 3 * srcWidth, srcHeight).split(srcWidth, srcHeight)[0],
+            DOWN to TextureRegion(img, 0, 0 * srcHeight, 3 * srcWidth, srcHeight).split(srcWidth, srcHeight)[0],
+            RIGHT to TextureRegion(img, 0, 2 * srcHeight, 3 * srcWidth, srcHeight).split(srcWidth, srcHeight)[0],
         ),
     )
 

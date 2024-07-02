@@ -12,13 +12,15 @@ import com.mygdx.engine.CollisionHolder
 
 class Npc(initialPosition: Vector2, collisionHolder: CollisionHolder) : Character("Npc", initialPosition, collisionHolder) {
     private val img = Texture("RSE Peds 04.png")
+    private val srcWidth = 3 * MOVEMENT_DISTANCE
+    private val srcHeight = 4 * MOVEMENT_DISTANCE
 
     override val idleState = buildIdleState(
         idleSprites = mapOf(
-            UP to Sprite(img, 24, 224, 24, 32),
-            LEFT to Sprite(img, 24, 160, 24, 32),
-            DOWN to Sprite(img, 24, 128, 24, 32),
-            RIGHT to Sprite(img, 24, 192, 24, 32),
+            UP to Sprite(img, srcWidth, 128 + 3 * srcHeight, srcWidth, srcHeight),
+            LEFT to Sprite(img, srcWidth, 128 + 1 * srcHeight, srcWidth, srcHeight),
+            DOWN to Sprite(img, srcWidth, 128 + 0 * srcHeight, srcWidth, srcHeight),
+            RIGHT to Sprite(img, srcWidth, 128 + 2 * srcHeight, srcWidth, srcHeight),
         ),
     )
 }

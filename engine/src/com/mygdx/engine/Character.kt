@@ -82,7 +82,7 @@ abstract class Character(
         )
 
     fun calculateHitBox(position: Vector2 = this.position): Rectangle =
-        Rectangle(position.x + state.textureRegion.regionWidth / 2 - 5, position.y + 2, 10f, 10f)
+        Rectangle(position.x + MOVEMENT_DISTANCE, position.y, MOVEMENT_DISTANCE.toFloat(), 2f * MOVEMENT_DISTANCE)
 
     override fun drawDebugBounds(shapes: ShapeRenderer) {
         super.drawDebugBounds(shapes)
