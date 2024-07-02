@@ -1,6 +1,7 @@
 package com.mygdx.engine
 
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonObject
 
 @Serializable
 data class TileMap(
@@ -28,13 +29,7 @@ data class TileMap(
         @Serializable
         data class Tile(
             val id: Int,
-            val properties: List<Property>,
-        ) {
-            @Serializable
-            data class Property(
-                val name: String,
-                val value: Boolean, // TODO: parse as map is other type than bool
-            )
-        }
+            val properties: List<JsonObject>,
+        )
     }
 }

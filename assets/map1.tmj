@@ -188,6 +188,42 @@
          "tileheight":8,
          "tiles":[
                 {
+                 "id":258,
+                 "properties":[
+                        {
+                         "name":"zindex",
+                         "type":"int",
+                         "value":2
+                        }]
+                }, 
+                {
+                 "id":259,
+                 "properties":[
+                        {
+                         "name":"zindex",
+                         "type":"int",
+                         "value":2
+                        }]
+                }, 
+                {
+                 "id":260,
+                 "properties":[
+                        {
+                         "name":"zindex",
+                         "type":"int",
+                         "value":2
+                        }]
+                }, 
+                {
+                 "id":261,
+                 "properties":[
+                        {
+                         "name":"zindex",
+                         "type":"int",
+                         "value":2
+                        }]
+                }, 
+                {
                  "id":288,
                  "properties":[
                         {
@@ -420,7 +456,8 @@
                          "type":"bool",
                          "value":true
                         }]
-                }, 
+                },
+            
                 {
                  "id":330,
                  "properties":[
@@ -456,8 +493,7 @@
                          "type":"bool",
                          "value":true
                         }]
-                },
-            
+                }, 
                 {
                  "id":334,
                  "properties":[
@@ -691,7 +727,8 @@
                          "type":"bool",
                          "value":true
                         }]
-                }, 
+                },
+            
                 {
                  "id":392,
                  "properties":[
@@ -727,8 +764,7 @@
                          "type":"bool",
                          "value":true
                         }]
-                },
-            
+                }, 
                 {
                  "id":396,
                  "properties":[
@@ -962,7 +998,8 @@
                          "type":"bool",
                          "value":true
                         }]
-                }, 
+                },
+            
                 {
                  "id":454,
                  "properties":[
@@ -998,8 +1035,7 @@
                          "type":"bool",
                          "value":true
                         }]
-                },
-            
+                }, 
                 {
                  "id":458,
                  "properties":[
@@ -1233,7 +1269,8 @@
                          "type":"bool",
                          "value":true
                         }]
-                }, 
+                },
+            
                 {
                  "id":544,
                  "properties":[
@@ -1269,8 +1306,7 @@
                          "type":"bool",
                          "value":true
                         }]
-                },
-            
+                }, 
                 {
                  "id":548,
                  "properties":[
@@ -1344,6 +1380,78 @@
                         }]
                 }, 
                 {
+                 "id":598,
+                 "properties":[
+                        {
+                         "name":"zindex",
+                         "type":"int",
+                         "value":2
+                        }]
+                }, 
+                {
+                 "id":599,
+                 "properties":[
+                        {
+                         "name":"zindex",
+                         "type":"int",
+                         "value":2
+                        }]
+                }, 
+                {
+                 "id":600,
+                 "properties":[
+                        {
+                         "name":"zindex",
+                         "type":"int",
+                         "value":2
+                        }]
+                }, 
+                {
+                 "id":601,
+                 "properties":[
+                        {
+                         "name":"zindex",
+                         "type":"int",
+                         "value":2
+                        }]
+                }, 
+                {
+                 "id":602,
+                 "properties":[
+                        {
+                         "name":"zindex",
+                         "type":"int",
+                         "value":2
+                        }]
+                }, 
+                {
+                 "id":603,
+                 "properties":[
+                        {
+                         "name":"zindex",
+                         "type":"int",
+                         "value":2
+                        }]
+                }, 
+                {
+                 "id":604,
+                 "properties":[
+                        {
+                         "name":"zindex",
+                         "type":"int",
+                         "value":2
+                        }]
+                }, 
+                {
+                 "id":605,
+                 "properties":[
+                        {
+                         "name":"zindex",
+                         "type":"int",
+                         "value":2
+                        }]
+                }, 
+                {
                  "id":608,
                  "properties":[
                         {
@@ -1395,6 +1503,79 @@
                          "name":"collision",
                          "type":"bool",
                          "value":true
+                        }]
+                }, 
+                {
+                 "id":630,
+                 "properties":[
+                        {
+                         "name":"zindex",
+                         "type":"int",
+                         "value":2
+                        }]
+                }, 
+                {
+                 "id":631,
+                 "properties":[
+                        {
+                         "name":"zindex",
+                         "type":"int",
+                         "value":2
+                        }]
+                }, 
+                {
+                 "id":632,
+                 "properties":[
+                        {
+                         "name":"zindex",
+                         "type":"int",
+                         "value":2
+                        }]
+                }, 
+                {
+                 "id":633,
+                 "properties":[
+                        {
+                         "name":"zindex",
+                         "type":"int",
+                         "value":2
+                        }]
+                },
+            
+                {
+                 "id":634,
+                 "properties":[
+                        {
+                         "name":"zindex",
+                         "type":"int",
+                         "value":2
+                        }]
+                }, 
+                {
+                 "id":635,
+                 "properties":[
+                        {
+                         "name":"zindex",
+                         "type":"int",
+                         "value":2
+                        }]
+                }, 
+                {
+                 "id":636,
+                 "properties":[
+                        {
+                         "name":"zindex",
+                         "type":"int",
+                         "value":2
+                        }]
+                }, 
+                {
+                 "id":637,
+                 "properties":[
+                        {
+                         "name":"zindex",
+                         "type":"int",
+                         "value":2
                         }]
                 }, 
                 {
@@ -1452,6 +1633,78 @@
                         }]
                 }, 
                 {
+                 "id":662,
+                 "properties":[
+                        {
+                         "name":"zindex",
+                         "type":"int",
+                         "value":2
+                        }]
+                }, 
+                {
+                 "id":663,
+                 "properties":[
+                        {
+                         "name":"zindex",
+                         "type":"int",
+                         "value":2
+                        }]
+                }, 
+                {
+                 "id":664,
+                 "properties":[
+                        {
+                         "name":"zindex",
+                         "type":"int",
+                         "value":2
+                        }]
+                }, 
+                {
+                 "id":665,
+                 "properties":[
+                        {
+                         "name":"zindex",
+                         "type":"int",
+                         "value":2
+                        }]
+                }, 
+                {
+                 "id":666,
+                 "properties":[
+                        {
+                         "name":"zindex",
+                         "type":"int",
+                         "value":2
+                        }]
+                }, 
+                {
+                 "id":667,
+                 "properties":[
+                        {
+                         "name":"zindex",
+                         "type":"int",
+                         "value":2
+                        }]
+                }, 
+                {
+                 "id":668,
+                 "properties":[
+                        {
+                         "name":"zindex",
+                         "type":"int",
+                         "value":2
+                        }]
+                }, 
+                {
+                 "id":669,
+                 "properties":[
+                        {
+                         "name":"zindex",
+                         "type":"int",
+                         "value":2
+                        }]
+                }, 
+                {
                  "id":672,
                  "properties":[
                         {
@@ -1503,6 +1756,223 @@
                          "name":"collision",
                          "type":"bool",
                          "value":true
+                        }]
+                }, 
+                {
+                 "id":694,
+                 "properties":[
+                        {
+                         "name":"zindex",
+                         "type":"int",
+                         "value":2
+                        }]
+                }, 
+                {
+                 "id":695,
+                 "properties":[
+                        {
+                         "name":"zindex",
+                         "type":"int",
+                         "value":2
+                        }]
+                }, 
+                {
+                 "id":696,
+                 "properties":[
+                        {
+                         "name":"zindex",
+                         "type":"int",
+                         "value":2
+                        }]
+                }, 
+                {
+                 "id":697,
+                 "properties":[
+                        {
+                         "name":"zindex",
+                         "type":"int",
+                         "value":2
+                        }]
+                }, 
+                {
+                 "id":698,
+                 "properties":[
+                        {
+                         "name":"zindex",
+                         "type":"int",
+                         "value":2
+                        }]
+                }, 
+                {
+                 "id":699,
+                 "properties":[
+                        {
+                         "name":"zindex",
+                         "type":"int",
+                         "value":2
+                        }]
+                },
+            
+                {
+                 "id":700,
+                 "properties":[
+                        {
+                         "name":"zindex",
+                         "type":"int",
+                         "value":2
+                        }]
+                }, 
+                {
+                 "id":701,
+                 "properties":[
+                        {
+                         "name":"zindex",
+                         "type":"int",
+                         "value":2
+                        }]
+                }, 
+                {
+                 "id":726,
+                 "properties":[
+                        {
+                         "name":"zindex",
+                         "type":"int",
+                         "value":0
+                        }]
+                }, 
+                {
+                 "id":727,
+                 "properties":[
+                        {
+                         "name":"zindex",
+                         "type":"int",
+                         "value":0
+                        }]
+                }, 
+                {
+                 "id":728,
+                 "properties":[
+                        {
+                         "name":"zindex",
+                         "type":"int",
+                         "value":0
+                        }]
+                }, 
+                {
+                 "id":729,
+                 "properties":[
+                        {
+                         "name":"zindex",
+                         "type":"int",
+                         "value":0
+                        }]
+                }, 
+                {
+                 "id":730,
+                 "properties":[
+                        {
+                         "name":"zindex",
+                         "type":"int",
+                         "value":0
+                        }]
+                }, 
+                {
+                 "id":731,
+                 "properties":[
+                        {
+                         "name":"zindex",
+                         "type":"int",
+                         "value":0
+                        }]
+                }, 
+                {
+                 "id":732,
+                 "properties":[
+                        {
+                         "name":"zindex",
+                         "type":"int",
+                         "value":0
+                        }]
+                }, 
+                {
+                 "id":733,
+                 "properties":[
+                        {
+                         "name":"zindex",
+                         "type":"int",
+                         "value":0
+                        }]
+                }, 
+                {
+                 "id":758,
+                 "properties":[
+                        {
+                         "name":"zindex",
+                         "type":"int",
+                         "value":0
+                        }]
+                }, 
+                {
+                 "id":759,
+                 "properties":[
+                        {
+                         "name":"zindex",
+                         "type":"int",
+                         "value":0
+                        }]
+                }, 
+                {
+                 "id":760,
+                 "properties":[
+                        {
+                         "name":"zindex",
+                         "type":"int",
+                         "value":0
+                        }]
+                }, 
+                {
+                 "id":761,
+                 "properties":[
+                        {
+                         "name":"zindex",
+                         "type":"int",
+                         "value":0
+                        }]
+                }, 
+                {
+                 "id":762,
+                 "properties":[
+                        {
+                         "name":"zindex",
+                         "type":"int",
+                         "value":0
+                        }]
+                }, 
+                {
+                 "id":763,
+                 "properties":[
+                        {
+                         "name":"zindex",
+                         "type":"int",
+                         "value":0
+                        }]
+                }, 
+                {
+                 "id":764,
+                 "properties":[
+                        {
+                         "name":"zindex",
+                         "type":"int",
+                         "value":0
+                        }]
+                }, 
+                {
+                 "id":765,
+                 "properties":[
+                        {
+                         "name":"zindex",
+                         "type":"int",
+                         "value":0
                         }]
                 }],
          "tilewidth":8

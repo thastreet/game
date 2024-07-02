@@ -8,43 +8,42 @@ import com.badlogic.gdx.utils.ScreenUtils
 import com.badlogic.gdx.utils.viewport.ScalingViewport
 import com.mygdx.engine.BaseStage
 import com.mygdx.engine.Character.Companion.MOVEMENT_DISTANCE
-import com.mygdx.engine.MapActor
+import com.mygdx.engine.StageMap
 
 class MainScreen : ScreenAdapter() {
-    private val stage = BaseStage(ScalingViewport(Scaling.stretch, Consts.SCREEN_WIDTH.toFloat(), Consts.SCREEN_HEIGHT.toFloat()))
-
-    init {
-        Gdx.input.inputProcessor = stage
-
-        stage.addMap(
-            MapActor(
+    private val stage = BaseStage(ScalingViewport(Scaling.stretch, Consts.SCREEN_WIDTH.toFloat(), Consts.SCREEN_HEIGHT.toFloat())) { collisionHolder ->
+        addMap(
+            StageMap(
                 file = Gdx.files.internal("map1.tmj"),
             )
         )
 
-        stage.addCharacter(
+        addCharacter(
             Rival(
                 initialPosition = Vector2(MOVEMENT_DISTANCE * 2f, MOVEMENT_DISTANCE * 2f),
-                collisionHolder = stage,
+                collisionHolder = collisionHolder,
             )
         )
 
-        stage.addCharacter(
+        addCharacter(
             Npc(
                 initialPosition = Vector2(MOVEMENT_DISTANCE * 4f, MOVEMENT_DISTANCE * 4f),
-                collisionHolder = stage,
+                collisionHolder = collisionHolder,
             )
         )
 
-        stage.addCharacter(
+        addCharacter(
             Player(
                 initialPosition = Vector2(MOVEMENT_DISTANCE * 20f, 0f),
-                collisionHolder = stage,
+                collisionHolder = collisionHolder,
             ).also {
-                with(stage) { it.setHasControl() }
+                it.setHasControl()
             }
         )
+    }
 
+    init {
+        Gdx.input.inputProcessor = stage
         stage.isDebugAll = false
     }
 

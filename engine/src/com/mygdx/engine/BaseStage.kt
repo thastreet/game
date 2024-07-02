@@ -6,24 +6,41 @@ import com.badlogic.gdx.utils.viewport.Viewport
 import com.mygdx.engine.Collision.Dynamic
 import com.mygdx.engine.Collision.Static
 
-class BaseStage(viewport: Viewport) : Stage(viewport), CollisionHolder {
+class BaseStage(viewport: Viewport, init: BaseStageInitializer.(CollisionHolder) -> Unit) : Stage(viewport), CollisionHolder {
     private val collisions = mutableSetOf<Collision>()
+    private val characters = mutableSetOf<Character>()
+    private val maps = mutableSetOf<StageMap>()
 
-    fun addCharacter(character: Character) {
-        addCollision(character)
-        addActor(character)
-    }
+    inner class BaseStageInitializer {
+        fun addCharacter(character: Character) {
+            collisions.add(character)
+            characters.add(character)
+        }
 
-    fun addMap(map: MapActor) {
-        addActor(map)
+        fun addMap(map: StageMap) {
+            map.collisions.forEach { collisions.add(it) }
+            maps.add(map)
+        }
 
-        map.collisions.forEach {
-            addCollision(it)
+        fun Character.setHasControl() {
+            setIsControllable()
+            keyboardFocus = this
         }
     }
 
-    private fun addCollision(collision: Collision) {
-        collisions.add(collision)
+    init {
+        BaseStageInitializer().init(this)
+
+        maps.forEach { addActor(it.actors[0]) }
+
+        characters.forEach { addActor(it) }
+
+        maps.map { map ->
+            map.actors
+                .toSortedMap()
+                .filterKeys { it > 0 }
+                .forEach { addActor(it.value) }
+        }
     }
 
     override fun Dynamic.canMove(hitBox: Rectangle): Boolean =
@@ -35,9 +52,4 @@ class BaseStage(viewport: Viewport) : Stage(viewport), CollisionHolder {
                 }
             }
             .none { it.hitBox.overlaps(hitBox) }
-
-    fun Character.setHasControl() {
-        setIsControllable()
-        keyboardFocus = this
-    }
 }
