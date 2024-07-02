@@ -6,12 +6,12 @@ import com.badlogic.gdx.utils.viewport.Viewport
 import com.mygdx.engine.Collision.Dynamic
 import com.mygdx.engine.Collision.Static
 
-class BaseStage(viewport: Viewport, init: BaseStageInitializer.(CollisionHolder) -> Unit) : Stage(viewport), CollisionHolder {
+class BaseStage(viewport: Viewport, init: Initializer.(CollisionHolder) -> Unit) : Stage(viewport), CollisionHolder {
     private val collisions = mutableSetOf<Collision>()
     private val characters = mutableSetOf<Character>()
     private val maps = mutableSetOf<StageMap>()
 
-    inner class BaseStageInitializer {
+    inner class Initializer {
         fun addCharacter(character: Character) {
             collisions.add(character)
             characters.add(character)
@@ -29,7 +29,7 @@ class BaseStage(viewport: Viewport, init: BaseStageInitializer.(CollisionHolder)
     }
 
     init {
-        BaseStageInitializer().init(this)
+        Initializer().init(this)
 
         maps.forEach { addActor(it.actors[0]) }
 
