@@ -4,7 +4,6 @@ import com.badlogic.gdx.graphics.g2d.Animation
 import com.badlogic.gdx.graphics.g2d.Animation.PlayMode.LOOP_PINGPONG
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g2d.TextureRegion
-import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.utils.Array
 import com.mygdx.engine.Character.Companion.MOVEMENT_DISTANCE
@@ -19,31 +18,47 @@ import kotlin.math.min
 
 class Walking(
     private val character: Character,
-    private val canMove: (Rectangle) -> Boolean,
     private val animationSprites: Map<Direction, Array<TextureRegion>>,
     private val onExit: () -> Unit,
-    val continueWalking: () -> Direction? = { null }
 ) : CharacterState() {
-    private var walkAnimationTime = 0f
-
+    private var nextDirection: Direction? = null
     private var targetPosition: Vector2? = null
+
+    private var walkAnimationTime = 0f
     private var walkAnimation: Animation<TextureRegion>? = null
 
-    fun enter(direction: Direction) {
-        targetPosition = Vector2(
-            character.x + when (direction) {
-                LEFT -> -MOVEMENT_DISTANCE
-                RIGHT -> MOVEMENT_DISTANCE
-                else -> 0
-            },
-            character.y + when (direction) {
-                DOWN -> -MOVEMENT_DISTANCE
-                UP -> MOVEMENT_DISTANCE
-                else -> 0
-            }
-        )
-        walkAnimation = Animation(0.2f, animationSprites[direction], LOOP_PINGPONG)
+    fun enter(direction: Direction, nextDirection: Direction? = null) {
+        if (targetPosition != null) {
+            character.log("Already walking")
+            return
+        }
+
+        this.nextDirection = nextDirection
+        walkTowards(direction)
+    }
+
+    private fun walkTowards(direction: Direction) {
         character.direction = direction
+        walkAnimation = Animation(0.2f, animationSprites[direction], LOOP_PINGPONG)
+
+        if (character.canMove(direction)) {
+            targetPosition = Vector2(
+                character.x + when (direction) {
+                    LEFT -> -MOVEMENT_DISTANCE
+                    RIGHT -> MOVEMENT_DISTANCE
+                    else -> 0
+                },
+                character.y + when (direction) {
+                    DOWN -> -MOVEMENT_DISTANCE
+                    UP -> MOVEMENT_DISTANCE
+                    else -> 0
+                }
+            )
+        }
+    }
+
+    fun update(direction: Direction?) {
+        nextDirection = direction
     }
 
     private fun exit() {
@@ -54,53 +69,50 @@ class Walking(
     }
 
     override fun update(delta: Float) {
-        val targetPosition = this.targetPosition ?: return
-
-        val direction = when {
-            targetPosition.y > character.y -> UP
-            targetPosition.y < character.y -> DOWN
-            targetPosition.x > character.x -> RIGHT
-            targetPosition.x < character.x -> LEFT
-            else -> return
-        }
-
-        val walkDeltaPosition = calculateWalkDeltaPosition(delta, direction)
-
         walkAnimationTime += delta
 
-        if (!canMove(character.calculateHitBox(walkDeltaPosition))) {
-            character.log("Can't move!")
-            onTargetPositionReached()
-            return
-        }
-
-        val walkDeltaDiff: Float
-        val availableDiff: Float
-        when (direction) {
-            UP, DOWN -> {
-                walkDeltaDiff = walkDeltaPosition.y - character.y
-                availableDiff = targetPosition.y - character.y
+        targetPosition?.let { targetPosition ->
+            val direction = when {
+                targetPosition.y > character.y -> UP
+                targetPosition.y < character.y -> DOWN
+                targetPosition.x > character.x -> RIGHT
+                targetPosition.x < character.x -> LEFT
+                else -> throw IllegalStateException("Character is already at target position")
             }
 
-            LEFT, RIGHT -> {
-                walkDeltaDiff = walkDeltaPosition.x - character.x
-                availableDiff = targetPosition.x - character.x
+            val walkDeltaPosition = calculateWalkDeltaPosition(delta, direction)
+
+            val walkDeltaDiff: Float
+            val availableDiff: Float
+            when (direction) {
+                UP, DOWN -> {
+                    walkDeltaDiff = walkDeltaPosition.y - character.y
+                    availableDiff = targetPosition.y - character.y
+                }
+
+                LEFT, RIGHT -> {
+                    walkDeltaDiff = walkDeltaPosition.x - character.x
+                    availableDiff = targetPosition.x - character.x
+                }
+            }
+
+            val coercedDiff = when (direction) {
+                RIGHT, UP -> min(walkDeltaDiff, availableDiff)
+                LEFT, DOWN -> max(walkDeltaDiff, availableDiff)
+            }
+
+            character.log("walkDeltaDiff: $walkDeltaDiff, availableDiff: $availableDiff, coercedDiff (final diff): $coercedDiff, targetPosition: $targetPosition")
+
+            when (direction) {
+                UP, DOWN -> character.y += coercedDiff
+                LEFT, RIGHT -> character.x += coercedDiff
             }
         }
 
-        val coercedDiff = when (direction) {
-            RIGHT, UP -> min(walkDeltaDiff, availableDiff)
-            LEFT, DOWN -> max(walkDeltaDiff, availableDiff)
-        }
+        val targetReached = character.position == targetPosition
+        val animationTimeout = targetPosition == null && nextDirection == null && walkAnimationTime > walkAnimation!!.animationDuration / 2
 
-        character.log("walkDeltaDiff: $walkDeltaDiff, availableDiff: $availableDiff, coercedDiff: $coercedDiff")
-
-        when (direction) {
-            UP, DOWN -> character.y += coercedDiff
-            LEFT, RIGHT -> character.x += coercedDiff
-        }
-
-        if (character.position == targetPosition) {
+        if (targetReached || animationTimeout) {
             onTargetPositionReached()
         }
     }
@@ -119,11 +131,18 @@ class Walking(
         )
 
     private fun onTargetPositionReached() {
-        continueWalking()?.let {
-            enter(it)
-        } ?: run {
-            exit()
-            onExit()
+        character.log("onTargetPositionReached")
+        targetPosition = null
+
+        nextDirection.let {
+            if (it == null) {
+                character.log("exit")
+                exit()
+                onExit()
+            } else {
+                character.log("continueWalking")
+                walkTowards(it)
+            }
         }
     }
 

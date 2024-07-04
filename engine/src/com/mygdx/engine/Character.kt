@@ -9,6 +9,9 @@ import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.mygdx.engine.Character.Direction.DOWN
+import com.mygdx.engine.Character.Direction.LEFT
+import com.mygdx.engine.Character.Direction.RIGHT
+import com.mygdx.engine.Character.Direction.UP
 import com.mygdx.engine.CharacterStateEnum.IDLE
 import com.mygdx.engine.CharacterStateEnum.WALKING
 import kotlin.Array
@@ -49,40 +52,57 @@ abstract class Character(
         setPosition(initialPosition)
     }
 
-    fun walk(direction: Direction) {
-        if (stateEnum == WALKING)
-            return
+    fun onWalkingKeysChanged(walkingKeys: Set<Int>) {
+        val direction: Direction? = walkingKeys.firstNotNullOfOrNull { it.asDirection }
 
-        states[WALKING]?.let {
-            (it as Walking).enter(direction)
+        when (stateEnum) {
+            WALKING -> (states[WALKING] as Walking).update(direction)
+            IDLE -> direction?.let {
+                walk(
+                    direction = it,
+                    keepWalking = true,
+                )
+            }
         }
+    }
+
+    fun walk(direction: Direction, keepWalking: Boolean = false) {
+        (states[WALKING] as Walking).enter(
+            direction = direction,
+            nextDirection = direction.takeIf { keepWalking },
+        )
         stateEnum = WALKING
     }
+
+    fun canMove(direction: Direction): Boolean =
+        with(collisionHolder) {
+            this@Character.canMove(
+                calculateHitBox(
+                    Vector2(
+                        x + when (direction) {
+                            LEFT -> -MOVEMENT_DISTANCE
+                            RIGHT -> MOVEMENT_DISTANCE
+                            else -> 0
+                        },
+                        y + when (direction) {
+                            UP -> MOVEMENT_DISTANCE
+                            DOWN -> -MOVEMENT_DISTANCE
+                            else -> 0
+                        }
+                    )
+                )
+            )
+        }
 
     fun setIsControllable() {
         addListener(ControlListener(this))
     }
 
-    protected fun buildIdleState(idleSprites: Map<Direction, Sprite>) =
-        Idle(
-            character = this,
-            idleSprites = idleSprites,
-        )
-
-    private val controlListener: ControlListener?
-        get() = listeners.firstNotNullOfOrNull { it as? ControlListener }
-
-    protected fun buildWalkingState(animationSprites: Map<Direction, Array<TextureRegion>>) =
-        Walking(
-            character = this,
-            canMove = { with(collisionHolder) { this@Character.canMove(it) } },
-            animationSprites = animationSprites.mapValues { GdxArray(it.value) },
-            onExit = { stateEnum = IDLE },
-            continueWalking = { controlListener?.keysDown?.firstNotNullOfOrNull { it.asDirection } },
-        )
-
-    fun calculateHitBox(position: Vector2 = this.position): Rectangle =
-        Rectangle(position.x + MOVEMENT_DISTANCE, position.y, MOVEMENT_DISTANCE.toFloat(), 2f * MOVEMENT_DISTANCE)
+    fun log(message: String) {
+        if (debug) {
+            println("$name state: $message")
+        }
+    }
 
     override fun drawDebugBounds(shapes: ShapeRenderer) {
         super.drawDebugBounds(shapes)
@@ -106,14 +126,24 @@ abstract class Character(
 
     override val id = name
 
-    fun log(message: String) {
-        if (debug) {
-            println("$name state: $message")
-        }
-    }
+    protected fun buildIdleState(idleSprites: Map<Direction, Sprite>) =
+        Idle(
+            character = this,
+            idleSprites = idleSprites,
+        )
+
+    protected fun buildWalkingState(animationSprites: Map<Direction, Array<TextureRegion>>) =
+        Walking(
+            character = this,
+            animationSprites = animationSprites.mapValues { GdxArray(it.value) },
+            onExit = { stateEnum = IDLE },
+        )
+
+    private fun calculateHitBox(position: Vector2 = this.position): Rectangle =
+        Rectangle(position.x + MOVEMENT_DISTANCE, position.y, MOVEMENT_DISTANCE.toFloat(), 2f * MOVEMENT_DISTANCE)
 
     companion object {
-        const val WALK_SPEED = 3f
+        const val WALK_SPEED = 4f
         const val MOVEMENT_DISTANCE = 8
     }
 }

@@ -34,7 +34,7 @@ class MainScreen : ScreenAdapter() {
 
         addCharacter(
             Player(
-                initialPosition = Vector2(MOVEMENT_DISTANCE * 20f, 0f),
+                initialPosition = Vector2(MOVEMENT_DISTANCE * 6f, MOVEMENT_DISTANCE * 4f),
                 collisionHolder = collisionHolder,
             ).also {
                 it.setHasControl()
